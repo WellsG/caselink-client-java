@@ -6,5 +6,5 @@ public interface CaselinkClient {
 
 	public List<Case> listManualCases() throws Exception;
 
-	public void listAutoCases() throws Exception;
+	public List<Case> listAutoCases() throws Exception;
 }

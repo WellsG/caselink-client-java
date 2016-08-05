@@ -43,6 +43,7 @@ public class CaselinkClientImpl implements CaselinkClient {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CaselinkClientImpl.class);
     private static final String API_MANUAL_CASE = "manual";
+    private static final String API_AUTO_CASE = "auto";
 
     private String serverURL;
     private HttpClient httpclient;
@@ -71,9 +72,17 @@ public class CaselinkClientImpl implements CaselinkClient {
 
 	}
 
-	public void listAutoCases() throws Exception {
-		// TODO Auto-generated method stub
-
+	public List<Case> listAutoCases() throws Exception {
+		String cases = execute(API_AUTO_CASE, null);
+		PagedList<Case> pagedList = null;
+		if (!StringUtils.isEmpty(cases)) {
+		    try {
+		        pagedList = new Gson().fromJson(cases, new TypeToken<PagedList<Case>>(){}.getType());
+		    } catch (Exception e) {
+		        LOGGER.error("", e);
+		    }
+		}
+		return pagedList != null ? pagedList.getResults() : null;
 	}
 
     public synchronized HttpClient client() {

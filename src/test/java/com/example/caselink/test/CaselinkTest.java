@@ -29,4 +29,16 @@ public class CaselinkTest {
 			System.out.println("");
 		}
 	}
+
+	@Test
+	public void testAutoCase() throws Exception {
+		List<Case> cases = client.listAutoCases();
+		for(Case ccase: cases) {
+			System.out.print(ccase.getId() + "|");
+			System.out.print(ccase.getAutomation() + "|");
+			System.out.print(ccase.getProject() + "|");
+			System.out.print(ccase.getType());
+			System.out.println("");
+		}
+	}
 }

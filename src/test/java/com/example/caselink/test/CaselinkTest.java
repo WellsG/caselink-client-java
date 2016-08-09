@@ -21,24 +21,10 @@ public class CaselinkTest {
 	@Test
 	public void testManualCase() throws Exception {
 		List<Case> cases = client.listManualCases();
-		for(Case ccase: cases) {
-			System.out.print(ccase.getId() + "|");
-			System.out.print(ccase.getAutomation() + "|");
-			System.out.print(ccase.getProject() + "|");
-			System.out.print(ccase.getType());
-			System.out.println("");
-		}
 	}
 
 	@Test
 	public void testAutoCase() throws Exception {
 		List<Case> cases = client.listAutoCases();
-		for(Case ccase: cases) {
-			System.out.print(ccase.getId() + "|");
-			System.out.print(ccase.getAutomation() + "|");
-			System.out.print(ccase.getProject() + "|");
-			System.out.print(ccase.getType());
-			System.out.println("");
-		}
 	}
 }

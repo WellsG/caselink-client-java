@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.security.Principal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -18,6 +19,7 @@ import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.Credentials;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.params.AuthPolicy;
 import org.apache.http.client.utils.URLEncodedUtils;
@@ -28,6 +30,7 @@ import org.apache.http.conn.scheme.SchemeRegistry;
 import org.apache.http.conn.ssl.AllowAllHostnameVerifier;
 import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.conn.ssl.X509HostnameVerifier;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.auth.SPNegoSchemeFactory;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.PoolingClientConnectionManager;
@@ -54,7 +57,7 @@ public class CaselinkClientImpl implements CaselinkClient {
     }
 
     public CaselinkClientImpl(String serverURL) {
-        LOGGER.info("Starting PDC client for server url: {}", serverURL);
+        LOGGER.info("Starting caselink client for server url: {}", serverURL);
         this.serverURL = serverURL;
     }
 
@@ -83,6 +86,33 @@ public class CaselinkClientImpl implements CaselinkClient {
 		    }
 		}
 		return pagedList != null ? pagedList.getResults() : null;
+	}
+
+	public void createManualCase(Case manualCase) throws Exception {
+		Map<String,Object> params = new HashMap<String,Object>();
+		params.put("id", manualCase.getId());
+		params.put("type", manualCase.getType());
+		params.put("title", manualCase.getTitle());
+		params.put("automation", manualCase.getAutomation());
+		params.put("commit", manualCase.getCommit());
+		params.put("project", manualCase.getProject());
+		params.put("archs", manualCase.getArchs().toArray());
+		params.put("documents", manualCase.getDocuments().toArray());
+		String result = executePost(API_MANUAL_CASE + "/", params);
+		LOGGER.info(result);
+	}
+
+	public Case getCaseById(String id) throws Exception {
+		String manualCase = execute(API_MANUAL_CASE + "/" + id, null);
+		Case caseResult = null;
+		if (!StringUtils.isEmpty(manualCase)) {
+            try {
+            	caseResult = new Gson().fromJson(manualCase, Case.class);
+            } catch (Exception e) {
+                LOGGER.error("", e);
+            }
+        }
+		return caseResult;
 	}
 
     public synchronized HttpClient client() {
@@ -118,6 +148,26 @@ public class CaselinkClientImpl implements CaselinkClient {
             request.abort();
         }
     }
+
+	private String executePost(String url, Map<String, Object> params) throws Exception {
+		StringBuffer urls = new StringBuffer();
+		urls.append(serverURL).append(url);
+		String jsonParams = new Gson().toJson(params);
+		LOGGER.info("Excute method: {}", urls.toString());
+		LOGGER.info("Params: {}", jsonParams);
+		HttpPost request = new HttpPost(urls.toString());
+		request.setHeader("Content-Type", "application/json");
+		request.setHeader("Accept", "application/json");
+		StringEntity entity = new StringEntity(jsonParams);
+		entity.setContentType("application/json");
+		request.setEntity(entity);
+		try {
+			HttpResponse response = client().execute(request);
+			return parseResponse(response);
+		} finally {
+			request.abort();
+		}
+	}
 
     private String parseResponse(HttpResponse response) throws Exception {
         StringBuffer sb = new StringBuffer();
@@ -179,7 +229,6 @@ public class CaselinkClientImpl implements CaselinkClient {
             return null;
         }
     }
-
 
 }
 

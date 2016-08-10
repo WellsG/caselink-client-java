@@ -11,4 +11,6 @@ public interface CaselinkClient {
 	public void createManualCase(Case manualCase) throws Exception;
 
 	public Case getCaseById(String id) throws Exception;
+
+	public void updateManualCase(Case manualCase) throws Exception;
 }

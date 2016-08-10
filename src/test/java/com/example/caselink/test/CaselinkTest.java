@@ -55,4 +55,21 @@ public class CaselinkTest {
 		assertEquals(caseResult.getType(), "testcase");
 		assertEquals(caseResult.getTitle(), "Dashboard Test 5");
 	}
+
+	@Test
+	public void testUpdateCase() throws Exception {
+		Case manualCase = new Case();
+		manualCase.setId("VIRTTP-9376");
+		manualCase.setProject("RHEL7");
+		manualCase.setCommit("commit1");
+		manualCase.setType("testcase");
+		manualCase.setTitle("Dashboard Test 5");
+		manualCase.setAutomation("automated");
+		List<String> documents = new ArrayList<String>();
+		documents.add("Libvirt Test Plan - Scalability and Longevity");
+		manualCase.setDocuments(documents);
+		List<String> archs = new ArrayList<String>();
+		manualCase.setArchs(archs);
+		client.updateManualCase(manualCase);
+	}
 }

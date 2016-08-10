@@ -20,6 +20,7 @@ import org.apache.http.auth.Credentials;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.params.AuthPolicy;
 import org.apache.http.client.utils.URLEncodedUtils;
@@ -115,6 +116,20 @@ public class CaselinkClientImpl implements CaselinkClient {
 		return caseResult;
 	}
 
+	public void updateManualCase(Case manualCase) throws Exception {
+		Map<String,Object> params = new HashMap<String,Object>();
+		params.put("id", manualCase.getId());
+		params.put("type", manualCase.getType());
+		params.put("title", manualCase.getTitle());
+		params.put("automation", manualCase.getAutomation());
+		params.put("commit", manualCase.getCommit());
+		params.put("project", manualCase.getProject());
+		params.put("archs", manualCase.getArchs().toArray());
+		params.put("documents", manualCase.getDocuments().toArray());
+		String result = executePut(API_MANUAL_CASE + "/" + manualCase.getId() + "/", params);
+		LOGGER.info(result);
+	}
+
     public synchronized HttpClient client() {
         if (httpclient == null) {
             System.setProperty("sun.security.krb5.debug", "true");
@@ -156,6 +171,26 @@ public class CaselinkClientImpl implements CaselinkClient {
 		LOGGER.info("Excute method: {}", urls.toString());
 		LOGGER.info("Params: {}", jsonParams);
 		HttpPost request = new HttpPost(urls.toString());
+		request.setHeader("Content-Type", "application/json");
+		request.setHeader("Accept", "application/json");
+		StringEntity entity = new StringEntity(jsonParams);
+		entity.setContentType("application/json");
+		request.setEntity(entity);
+		try {
+			HttpResponse response = client().execute(request);
+			return parseResponse(response);
+		} finally {
+			request.abort();
+		}
+	}
+
+	private String executePut(String url, Map<String, Object> params) throws Exception {
+		StringBuffer urls = new StringBuffer();
+		urls.append(serverURL).append(url);
+		String jsonParams = new Gson().toJson(params);
+		LOGGER.info("Excute method: {}", urls.toString());
+		LOGGER.info("Params: {}", jsonParams);
+		HttpPut request = new HttpPut(urls.toString());
 		request.setHeader("Content-Type", "application/json");
 		request.setHeader("Accept", "application/json");
 		StringEntity entity = new StringEntity(jsonParams);

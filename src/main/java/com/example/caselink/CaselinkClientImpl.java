@@ -89,7 +89,7 @@ public class CaselinkClientImpl implements CaselinkClient {
 		return pagedList != null ? pagedList.getResults() : null;
 	}
 
-	public void createManualCase(Case manualCase) throws Exception {
+	public Case createManualCase(Case manualCase) throws Exception {
 		Map<String,Object> params = new HashMap<String,Object>();
 		params.put("id", manualCase.getId());
 		params.put("type", manualCase.getType());
@@ -101,6 +101,18 @@ public class CaselinkClientImpl implements CaselinkClient {
 		params.put("documents", manualCase.getDocuments().toArray());
 		String result = executePost(API_MANUAL_CASE + "/", params);
 		LOGGER.info(result);
+		Case resultCase = null;
+		if (!StringUtils.isEmpty(result)) {
+			if (result.contains("WorkItem with this id already exists.")) {
+				throw new Exception(result);
+			}
+		    try {
+		    	resultCase = new Gson().fromJson(result, Case.class);
+		    } catch (Exception e) {
+		        LOGGER.error("", e);
+		    }
+		}
+		return resultCase;
 	}
 
 	public Case getCaseById(String id) throws Exception {

@@ -8,7 +8,7 @@ public interface CaselinkClient {
 
 	public List<Case> listAutoCases() throws Exception;
 
-	public void createManualCase(Case manualCase) throws Exception;
+	public Case createManualCase(Case manualCase) throws Exception;
 
 	public Case getCaseById(String id) throws Exception;
 

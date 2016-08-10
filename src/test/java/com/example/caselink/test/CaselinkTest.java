@@ -1,6 +1,7 @@
 package com.example.caselink.test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,17 +25,19 @@ public class CaselinkTest {
 	@Test
 	public void testManualCase() throws Exception {
 		List<Case> cases = client.listManualCases();
+		assertNotNull(cases);
 	}
 
 	@Test
 	public void testAutoCase() throws Exception {
 		List<Case> cases = client.listAutoCases();
+		assertNotNull(cases);
 	}
 
 	@Test
 	public void testCreateCase() throws Exception {
 		Case manualCase = new Case();
-		manualCase.setId("VIRTTP-9376");
+		manualCase.setId("VIRTTP-9377");
 		manualCase.setProject("RHEL7");
 		manualCase.setCommit("commit");
 		manualCase.setType("testcase");
@@ -45,7 +48,11 @@ public class CaselinkTest {
 		manualCase.setDocuments(documents);
 		List<String> archs = new ArrayList<String>();
 		manualCase.setArchs(archs);
-		client.createManualCase(manualCase);
+		Case result = client.createManualCase(manualCase);
+		assertEquals(result.getId(), "VIRTTP-9377");
+		assertEquals(result.getProject(), "RHEL7");
+		assertEquals(result.getType(), "testcase");
+		assertEquals(result.getTitle(), "Dashboard Test 5");
 	}
 
 	@Test

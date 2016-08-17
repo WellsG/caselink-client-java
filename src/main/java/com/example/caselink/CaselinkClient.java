@@ -13,4 +13,6 @@ public interface CaselinkClient {
 	public Case getCaseById(String id) throws Exception;
 
 	public void updateManualCase(Case manualCase) throws Exception;
+
+	public void createLinkage(Linkage linkage) throws Exception;
 }

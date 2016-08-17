@@ -12,6 +12,7 @@ import org.junit.Test;
 import com.example.caselink.Case;
 import com.example.caselink.CaselinkClient;
 import com.example.caselink.CaselinkUtil;
+import com.example.caselink.Linkage;
 
 public class CaselinkTest {
 
@@ -78,5 +79,14 @@ public class CaselinkTest {
 		List<String> archs = new ArrayList<String>();
 		manualCase.setArchs(archs);
 		client.updateManualCase(manualCase);
+	}
+
+	@Test
+	public void testCreateLink() throws Exception {
+		Linkage link = new Linkage();
+		link.setAutocase_pattern("conf_file.libvirtd_conf.unix_sock");
+		link.setTitle("Test linkage");
+		link.setWorkitem("RHEL7-19094");
+		client.createLinkage(link);
 	}
 }

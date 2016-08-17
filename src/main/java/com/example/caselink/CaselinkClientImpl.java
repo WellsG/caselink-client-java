@@ -48,6 +48,7 @@ public class CaselinkClientImpl implements CaselinkClient {
     private static final Logger LOGGER = LoggerFactory.getLogger(CaselinkClientImpl.class);
     private static final String API_MANUAL_CASE = "manual";
     private static final String API_AUTO_CASE = "auto";
+    private static final String API_LINKAGE = "link";
 
     private String serverURL;
     private HttpClient httpclient;
@@ -139,6 +140,15 @@ public class CaselinkClientImpl implements CaselinkClient {
 		params.put("archs", manualCase.getArchs().toArray());
 		params.put("documents", manualCase.getDocuments().toArray());
 		String result = executePut(API_MANUAL_CASE + "/" + manualCase.getId() + "/", params);
+		LOGGER.info(result);
+	}
+
+	public void createLinkage(Linkage linkage) throws Exception {
+		Map<String,Object> params = new HashMap<String,Object>();
+		params.put("autocase_pattern", linkage.getAutocase_pattern());
+		params.put("title", linkage.getTitle());
+		params.put("workitem", linkage.getWorkitem());
+		String result = executePost(API_LINKAGE + "/", params);
 		LOGGER.info(result);
 	}
 

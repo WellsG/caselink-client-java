@@ -143,13 +143,28 @@ public class CaselinkClientImpl implements CaselinkClient {
 		LOGGER.info(result);
 	}
 
-	public void createLinkage(Linkage linkage) throws Exception {
+	public Linkage createLinkage(Linkage linkage) throws Exception {
 		Map<String,Object> params = new HashMap<String,Object>();
 		params.put("autocase_pattern", linkage.getAutocase_pattern());
 		params.put("title", linkage.getTitle());
 		params.put("workitem", linkage.getWorkitem());
 		String result = executePost(API_LINKAGE + "/", params);
 		LOGGER.info(result);
+		Linkage link = null;
+		if (!StringUtils.isEmpty(result)) {
+			if (result.contains("non_field_errors")) {
+				throw new Exception(result);
+			}
+			if (result.contains("object does not exist")) {
+				throw new Exception(result);
+			}
+		    try {
+		    	link = new Gson().fromJson(result, Linkage.class);
+		    } catch (Exception e) {
+		        LOGGER.error("", e);
+		    }
+		}
+		return link;
 	}
 
     public synchronized HttpClient client() {

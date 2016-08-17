@@ -84,9 +84,11 @@ public class CaselinkTest {
 	@Test
 	public void testCreateLink() throws Exception {
 		Linkage link = new Linkage();
-		link.setAutocase_pattern("conf_file.libvirtd_conf.unix_sock");
+		link.setAutocase_pattern("conf_file.libvirtd_conf.unix_sock2");
 		link.setTitle("Test linkage");
 		link.setWorkitem("RHEL7-19094");
-		client.createLinkage(link);
+		Linkage linkage = client.createLinkage(link);
+		assertEquals(linkage.getAutocase_pattern(),link.getAutocase_pattern());
+		
 	}
 }

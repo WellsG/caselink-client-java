@@ -14,5 +14,5 @@ public interface CaselinkClient {
 
 	public void updateManualCase(Case manualCase) throws Exception;
 
-	public void createLinkage(Linkage linkage) throws Exception;
+	public Linkage createLinkage(Linkage linkage) throws Exception;
 }
